@@ -3,6 +3,7 @@ output_files
 db
 software
 nios2_system
+.qsys_edit
 .metadata
 *.rpt
 *.swp
