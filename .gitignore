@@ -1,0 +1,10 @@
+incremental_db
+output_files
+db
+software
+nios2_system
+.metadata
+*.rpt
+*.swp
+*~
+*.html
