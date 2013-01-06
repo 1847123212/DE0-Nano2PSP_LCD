@@ -5,6 +5,8 @@ software
 nios2_system
 .qsys_edit
 .metadata
+*.qws
+*.jdi
 *.rpt
 *.swp
 *~

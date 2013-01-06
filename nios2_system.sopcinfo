@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="nios2_system" kind="nios2_system" version="1.0" fabric="QSYS">
  <!-- Format version 12.1 177 (Future versions may contain additional information.) -->
- <!-- 2013.01.06.02:39:01 -->
+ <!-- 2013.01.06.16:24:20 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1357436338</value>
+  <value>1357485858</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -4867,7 +4867,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1357436338</value>
+   <value>1357485858</value>
   </assignment>
   <parameter name="id">
    <type>int</type>
@@ -4879,7 +4879,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1357436338</value>
+   <value>1357485858</value>
    <derived>false</derived>
    <enabled>false</enabled>
    <visible>false</visible>

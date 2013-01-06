@@ -124,19 +124,19 @@
          type = "String";
       }
    }
-   element led_pio.s1
-   {
-      datum baseAddress
-      {
-         value = "67244176";
-         type = "String";
-      }
-   }
    element sdram.s1
    {
       datum baseAddress
       {
          value = "33554432";
+         type = "String";
+      }
+   }
+   element led_pio.s1
+   {
+      datum baseAddress
+      {
+         value = "67244176";
          type = "String";
       }
    }
@@ -173,7 +173,7 @@
       }
       datum megawizard_uipreferences
       {
-         value = "{output_language=VERILOG, output_directory=/home/morten/Documents/projects/fpga/DE0-Nano_LCD_final}";
+         value = "{output_language=VERILOG, output_directory=/home/morten/git/build_test}";
          type = "String";
       }
    }
@@ -232,7 +232,7 @@
  <parameter name="projectName" value="DE0-Nano_LCD.qpf" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1357429341486" />
+ <parameter name="timeStamp" value="1357485614309" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -270,7 +270,7 @@
    enabled="1"
    name="onchip_memory">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName">nios2_system_onchip_memory</parameter>
+  <parameter name="autoInitializationFileName">$${FILENAME}_onchip_memory</parameter>
   <parameter name="blockType" value="AUTO" />
   <parameter name="dataWidth" value="32" />
   <parameter name="deviceFamily" value="Cyclone IV E" />
