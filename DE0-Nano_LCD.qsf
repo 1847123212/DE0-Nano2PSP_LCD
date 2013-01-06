@@ -128,4 +128,9 @@ set_location_assignment PIN_N15 -to video_sync_generator_sync_RGB_OUT[1]
 set_location_assignment PIN_P14 -to video_sync_generator_sync_RGB_OUT[0]
 set_location_assignment PIN_F13 -to video_sync_generator_sync_VD
 set_location_assignment PIN_T14 -to clock_bridge_0_out_clk_clk
+set_location_assignment PIN_J16 -to pio_sd_external_connection_export[0]
+set_location_assignment PIN_M10 -to pio_sd_external_connection_export[1]
+set_location_assignment PIN_K15 -to pio_sd_external_connection_export[2]
+set_location_assignment PIN_N14 -to pio_sd_external_connection_export[3]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to pio_sd_external_connection_export[3]
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
