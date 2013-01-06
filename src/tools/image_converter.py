@@ -60,7 +60,10 @@ if __name__=="__main__":
         conv_img = conv_img.astype('uint32')
         new_img = (conv_img[:,:,0]<<16) | (conv_img[:,:,1]<<8) | conv_img[:,:,2]
 
-
+    # jpeg images needs to be fliped
+    if img_path.split('.')[-1] == ("jpg" or "JPG" or "JPEG" or "jpeg"):
+        new_img = np.flipud(new_img)
+        
     # Save result
     try:
         img_save_path = sys.argv[2]
