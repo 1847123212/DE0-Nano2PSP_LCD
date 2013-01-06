@@ -203,19 +203,18 @@ int main (void)
     alt_sgdma_dev *dma = alt_avalon_sgdma_open("/dev/sgdma");
     printf("open dma returned %ld\n", (alt_u32)dma);
     printf("framebuffer 1 at %lx\n", (alt_u32)frameBufferA);
-
+	init_and_start_framebuffer(dma);
 
     // assert the DISP signal
     //
     IOWR_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE, 128+64);
 
-    init_and_start_framebuffer(dma);
 
 
 	f_mount(0, &Fatfs);		/* Register volume work area (never fails) */
 
 //	printf("\nOpen an existing file (message.txt).\n");
-//	rc = f_open(&Fil, "christina.psp", FA_READ);
+//	rc = f_open(&Fil, "ANGELINA.PSP", FA_READ);
 //	if (rc) die(rc);
 //
 //	printf("\nType the file content.\n");
@@ -230,7 +229,6 @@ int main (void)
 //	printf("\nClose the file.\n");
 //	rc = f_close(&Fil);
 //	if (rc) die(rc);
-//
 //
 //	printf("\nOpen an existing file (message.txt).\n");
 //	rc = f_open(&Fil, "large2.psp", FA_READ);
@@ -262,10 +260,12 @@ int main (void)
 //	rc = f_close(&Fil);
 //	if (rc) die(rc);
 
+
+
+	while (1) {
 	printf("\nOpen root directory.\n");
 	rc = f_opendir(&dir, "");
 	if (rc) die(rc);
-
 	printf("\nDirectory listing...\n");
 	for (;;) {
 		rc = f_readdir(&dir, &fno);		/* Read a directory item */
@@ -305,6 +305,7 @@ int main (void)
 
 	}
 	if (rc) die(rc);
+	}
 
 	printf("\nTest completed.\n");
 	for(i=0;i<=30000000;i++) {};
