@@ -10,165 +10,14 @@
 #include <altera_avalon_sgdma_descriptor.h>
 #include <altera_avalon_sgdma_regs.h>
 
+#include "LCD/lcd.h"
+#include "LCD/drawing_routines.h"
 #include "ff/ff.h"
-
-// some useful structs ----------------------------
-//
-
-// a pixel in 32 bit
-typedef union
-{
-    alt_u32 color32;
-    struct allColor {
-        alt_u8 b;
-        alt_u8 g;
-        alt_u8 r;
-        alt_u8 blank;
-    }color8;
-}Color;
-
-// a particle, just for funsies
-typedef struct
-{
-    int x, y;
-    int vx, vy;
-}Particle;
 
 
 FATFS Fatfs;		/* File system object */
 FIL Fil;			/* File object */
 BYTE Buff[1];		/* File read buffer */
-
-// global variables  -----------------------------
-//
-
-// DMA descriptors
-alt_sgdma_descriptor dmaDescA[8];
-alt_sgdma_descriptor dmaDescEND;
-alt_sgdma_descriptor dmaDescB[8];
-alt_sgdma_descriptor dmaDescBEND;
-
-
-// we locate our first framebuffer at the beginning of the SDRAM
-alt_u32* frameBufferA = (alt_u32*)SDRAM_BASE;
-alt_u32* frameBufferB = (alt_u32*)SDRAM_BASE+0x7F800;
-
-// Active framebuffer
-int active = 0;		// if 0 A active else B active
-
-
-// DMA  -------------------------------------
-//
-
-// The InterruptService Routine (actually a callback function called by the ISR)
-//
-void my_dma_callback(void *data)
-{
-    // reset the OWNED_BY_HW bit in the descriptors to reuse the chain
-    int i;
-
-    if (active == 0) {
-    	for(i = 0; i < 8;++i) {
-    		dmaDescA[i].control |= 1<<ALTERA_AVALON_SGDMA_DESCRIPTOR_CONTROL_OWNED_BY_HW_OFST;
-    	}
-        // trigger another transfer all over again
-        alt_avalon_sgdma_do_async_transfer((alt_sgdma_dev*)data, dmaDescA);
-//        active = 1;
-    } else {
-    	for(i = 0; i < 8;++i) {
-    	    dmaDescB[i].control |= 1<<ALTERA_AVALON_SGDMA_DESCRIPTOR_CONTROL_OWNED_BY_HW_OFST;
-    	}
-        // trigger another transfer all over again
-         alt_avalon_sgdma_do_async_transfer((alt_sgdma_dev*)data, dmaDescB);
-//         active = 0;
-    }
-}
-
-
-// this subroutine initializes a chain of descriptors, registers the
-// interrupt service routine and starts the first asynchronous transfer
-//
-void init_and_start_framebuffer(alt_sgdma_dev *dma)
-{
-    // 480*272 lines * 4 bytes = 522240 bytes
-    //   65532 (0xfffc) bytes * 7 = 458724
-    //  +63516 (0xf81c) bytes
-
-    // frame buffer A
-    alt_u8* buff = (alt_u8*)frameBufferA;
-    int i;
-    for(i = 0; i < 8; ++i) {
-        alt_u16 size = (i<7)?0xfffc:0xf81c;
-	alt_avalon_sgdma_construct_mem_to_stream_desc(
-	    &dmaDescA[i],
-	    (i<7) ? (&dmaDescA[i+1]) : &dmaDescEND,
-	    (alt_u32*)buff,
-	    size, 0, i==0, i==7, 0);
-	    buff+= size;
-	}
-
-    // frame buffer B
-    buff = (alt_u8*)frameBufferB;
-    for(i = 0; i < 8; ++i) {
-        alt_u16 size = (i<7)?0xfffc:0xf81c;
-	alt_avalon_sgdma_construct_mem_to_stream_desc(
-	    &dmaDescB[i],
-	    (i<7) ? (&dmaDescB[i+1]) : &dmaDescBEND,
-	    (alt_u32*)buff,
-	    size, 0, i==0, i==7, 0);
-	    buff+= size;
-	}
-
-	alt_avalon_sgdma_register_callback(
-            dma, my_dma_callback,
-            ALTERA_AVALON_SGDMA_CONTROL_IE_CHAIN_COMPLETED_MSK
-            |ALTERA_AVALON_SGDMA_CONTROL_IE_GLOBAL_MSK,
-            (void*)dma);
-
-	alt_avalon_sgdma_do_async_transfer(dma, dmaDescA);
-}
-
-// basic drawing routines --------------------------------------
-//
-
-
-// draw a pixel
-inline void setPix(const int x, const int y, const Color col, alt_u32* buffer)
-{
-    buffer[x + y * 480] = col.color32;
-}
-
-// bresenham line drawing
-void line(alt_u32* buffer, int x0, int y0, int x1, int y1, Color color) {
-
-    int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
-    int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1;
-    int err = (dx>dy ? dx : -dy)/2, e2;
-
-    for(;;){
-        setPix(x0, y0, color, buffer);
-	if (x0==x1 && y0==y1) break;
-	e2 = err;
-	if (e2 >-dx) { err -= dy; x0 += sx; }
-	if (e2 < dy) { err += dx; y0 += sy; }
-    }
-}
-
-// useful to fill parts of the screen without blocking the SDRAM for too long
-// use this instead of memset when doing frame buffer fills
-void nonburst_memset(alt_u32* trg, alt_u32 val, alt_u32 size)
-{
-const int chunkSize = 8;// <-size of burst, lower this if the display gets corrupted.
-alt_u32 s;
-//int i;
-    while(size) {
-	s = (size>chunkSize)?chunkSize:size;
-	memset(trg, val, s*4);
-        trg+=s;
-        //for(i=0;i<30;i++) {}
-	size-=s;
-    }
-}
 
 void die (		/* Stop with dying message */
 	FRESULT rc	/* FatFs return value */
@@ -191,77 +40,25 @@ int main (void)
 	UINT bw, br, i;
 
 	// Switch all off
-    IOWR_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE, 0);
+    lcd_off();
     for(i=0;i<5000000;i++){}
 
     // switch on the backlight
     //
-    IOWR_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE, 64);
 
     // initialize the DMA and get a device handle
     //
     alt_sgdma_dev *dma = alt_avalon_sgdma_open("/dev/sgdma");
     printf("open dma returned %ld\n", (alt_u32)dma);
     printf("framebuffer 1 at %lx\n", (alt_u32)frameBufferA);
-
-
-    // assert the DISP signal
-    //
-    IOWR_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE, 128+64);
-
     init_and_start_framebuffer(dma);
+
+    lcd_on();
 
 
 	f_mount(0, &Fatfs);		/* Register volume work area (never fails) */
 
-//	printf("\nOpen an existing file (message.txt).\n");
-//	rc = f_open(&Fil, "christina.psp", FA_READ);
-//	if (rc) die(rc);
-//
-//	printf("\nType the file content.\n");
-//	for (;;) {
-//		rc = f_read(&Fil, frameBufferA, f_size(&Fil), &br);	/* Read a chunk of file */
-//		if (rc || !br) break;			/* Error or end of file */
-//		//for (i = 0; i < br; i++)		/* Type the data */
-//		//	putchar(Buff[i]);
-//	}
-//	if (rc) die(rc);
-//
-//	printf("\nClose the file.\n");
-//	rc = f_close(&Fil);
-//	if (rc) die(rc);
-//
-//
-//	printf("\nOpen an existing file (message.txt).\n");
-//	rc = f_open(&Fil, "large2.psp", FA_READ);
-//	if (rc) die(rc);
-//
-//	printf("\nType the file content.\n");
-//	for (;;) {
-//		rc = f_read(&Fil, frameBufferA, f_size(&Fil), &br);	/* Read a chunk of file */
-//		if (rc || !br) break;			/* Error or end of file */
-//		//for (i = 0; i < br; i++)		/* Type the data */
-//		//	putchar(Buff[i]);
-//	}
-//	if (rc) die(rc);
-//
-//	printf("\nClose the file.\n");
-//	rc = f_close(&Fil);
-//	if (rc) die(rc);
-
-//	printf("\nCreate a new file (hello.txt).\n");
-//	rc = f_open(&Fil, "HELLO.TXT", FA_WRITE | FA_CREATE_ALWAYS);
-//	if (rc) die(rc);
-//
-//	printf("\nWrite a text data. (Hello world!)\n");
-//	rc = f_write(&Fil, "Hello world!\r\n", 14, &bw);
-//	if (rc) die(rc);
-//	printf("%u bytes written.\n", bw);
-//
-//	printf("\nClose the file.\n");
-//	rc = f_close(&Fil);
-//	if (rc) die(rc);
-
+	for (;;) {
 	printf("\nOpen root directory.\n");
 	rc = f_opendir(&dir, "");
 	if (rc) die(rc);
@@ -280,16 +77,16 @@ int main (void)
 
 		printf("\nType the file content.\n");
 		for (;;) {
-			if (active == 0) {
+			if (active_buffer == 0) {
 				rc = f_read(&Fil, frameBufferB, f_size(&Fil), &br);	/* Read a chunk of file */
 				if (rc || !br) {
-					active = 1;
+					active_buffer = 1;
 					break;			/* Error or end of file */
 				}
 			} else {
 				rc = f_read(&Fil, frameBufferA, f_size(&Fil), &br);	/* Read a chunk of file */
 				if (rc || !br) {
-					active = 0;
+					active_buffer = 0;
 					break;			/* Error or end of file */
 				}
 			}
@@ -305,6 +102,7 @@ int main (void)
 
 	}
 	if (rc) die(rc);
+	}
 
 	printf("\nTest completed.\n");
 	for(i=0;i<=30000000;i++) {};
@@ -336,11 +134,11 @@ int main (void)
 	    	for(i=0;i<=3000;i++) {};
 
 	    	if (count%5000 == 0) {
-	    		if(active == 0) {
-	    			active = 1;
+	    		if(active_buffer == 0) {
+	    			active_buffer = 1;
 	    			nonburst_memset(frameBufferA, col.color32, 130560);
 	    		} else {
-	    			active = 0;
+	    			active_buffer = 0;
 	    			nonburst_memset(frameBufferB, col.color32, 130560);
 	    		}
 	    	}
@@ -358,7 +156,7 @@ int main (void)
 	    	col.color8.r = j;
 	    	col.color8.g = 0;
 	    	col.color8.b = 50;
-	    	if (active == 0) {
+	    	if (active_buffer == 0) {
 	    		line(frameBufferA, particles[0].x, particles[0].y,
 	    				particles[1].x, particles[1].y, col);
 	    	} else {
