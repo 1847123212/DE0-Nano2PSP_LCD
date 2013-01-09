@@ -1,7 +1,7 @@
 #ifndef _LCD
 #define _LCD
 
-#include "altera_avalon_pio_regs.h"
+#include <altera_avalon_pio_regs.h>
 #include <altera_avalon_sgdma.h>
 #include <altera_avalon_sgdma_descriptor.h>
 #include <altera_avalon_sgdma_regs.h>
@@ -9,11 +9,12 @@
 #define BACKLIGHT_PIN 	0x40
 #define DISP_PIN		0x80
 
-#define lcd_backlight_on()	IOWR_ALTERA_AVALON_PIO_SET_BITS(LED_PIO_BASE, BACKLIGHT_PIN)
-#define lcd_backlight_off()	IOWR_ALTERA_AVALON_PIO_CLEAR_BITS(LED_PIO_BASE, BACKLIGHT_PIN)
+#define lcd_backlight_on()	IOWR_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE, IORD_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE) | BACKLIGHT_PIN)
+#define lcd_backlight_off()	IOWR_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE, IORD_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE) & (~(BACKLIGHT_PIN)))
 
-#define lcd_on()			IOWR_ALTERA_AVALON_PIO_SET_BITS(LED_PIO_BASE, BACKLIGHT_PIN | DISP_PIN)
-#define lcd_off()			IOWR_ALTERA_AVALON_PIO_CLEAR_BITS(LED_PIO_BASE, BACKLIGHT_PIN | DISP_PIN)
+#define lcd_on()			IOWR_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE, IORD_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE) | (BACKLIGHT_PIN | DISP_PIN))
+#define lcd_off()			IOWR_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE,  IORD_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE) & (~(BACKLIGHT_PIN | DISP_PIN)))
+
 
 extern alt_sgdma_descriptor dmaDescA[8];
 extern alt_sgdma_descriptor dmaDescEND;

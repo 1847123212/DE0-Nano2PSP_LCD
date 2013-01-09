@@ -80,3 +80,7 @@ void init_and_start_framebuffer(alt_sgdma_dev *dma)
 
 	alt_avalon_sgdma_do_async_transfer(dma, dmaDescA);
 }
+
+//void lcd_backlight_on(void) {
+//	IOWR_ALTERA_AVALON_PIO_DATA(LED_PIO_BASE, 64);
+//}
