@@ -16,7 +16,7 @@
    {
       datum baseAddress
       {
-         value = "67244200";
+         value = "67244248";
          type = "String";
       }
    }
@@ -40,7 +40,7 @@
    {
       datum baseAddress
       {
-         value = "67244192";
+         value = "67244240";
          type = "String";
       }
    }
@@ -120,7 +120,44 @@
    {
       datum baseAddress
       {
+         value = "67244208";
+         type = "String";
+      }
+   }
+   element led_pio.s1
+   {
+      datum baseAddress
+      {
+         value = "67244224";
+         type = "String";
+      }
+   }
+   element timer_0.s1
+   {
+      datum _tags
+      {
+         value = "";
+         type = "String";
+      }
+      datum baseAddress
+      {
+         value = "67244096";
+         type = "String";
+      }
+   }
+   element sys_clk_timer.s1
+   {
+      datum baseAddress
+      {
          value = "67244160";
+         type = "String";
+      }
+   }
+   element spi_master_0.s1
+   {
+      datum baseAddress
+      {
+         value = "67244192";
          type = "String";
       }
    }
@@ -136,23 +173,7 @@
    {
       datum baseAddress
       {
-         value = "67244096";
-         type = "String";
-      }
-   }
-   element sys_clk_timer.s1
-   {
-      datum baseAddress
-      {
          value = "67244128";
-         type = "String";
-      }
-   }
-   element led_pio.s1
-   {
-      datum baseAddress
-      {
-         value = "67244176";
          type = "String";
       }
    }
@@ -193,6 +214,14 @@
          type = "int";
       }
    }
+   element spi_master_0
+   {
+      datum _sortIndex
+      {
+         value = "15";
+         type = "int";
+      }
+   }
    element sys_clk_timer
    {
       datum _sortIndex
@@ -206,6 +235,14 @@
       datum _sortIndex
       {
          value = "5";
+         type = "int";
+      }
+   }
+   element timer_0
+   {
+      datum _sortIndex
+      {
+         value = "16";
          type = "int";
       }
    }
@@ -232,7 +269,7 @@
  <parameter name="projectName" value="DE0-Nano_LCD.qpf" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1357672848543" />
+ <parameter name="timeStamp" value="1357775026393" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -258,6 +295,11 @@
    internal="pio_sd.external_connection"
    type="conduit"
    dir="end" />
+ <interface
+   name="spi_master_0_external"
+   internal="spi_master_0.external"
+   type="conduit"
+   dir="end" />
  <module kind="clock_source" version="12.1" enabled="1" name="clk_0">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -270,7 +312,7 @@
    enabled="1"
    name="onchip_memory">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName">$${FILENAME}_onchip_memory</parameter>
+  <parameter name="autoInitializationFileName">nios2_system_onchip_memory</parameter>
   <parameter name="blockType" value="AUTO" />
   <parameter name="dataWidth" value="32" />
   <parameter name="deviceFamily" value="Cyclone IV E" />
@@ -382,7 +424,7 @@
   <parameter name="tightlyCoupledInstructionMaster2AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster3AddrWidth" value="1" />
   <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x2000000' end='0x4000000' /><slave name='onchip_memory.s1' start='0x4010000' end='0x4019858' /><slave name='cpu.jtag_debug_module' start='0x4020800' end='0x4021000' /></address-map>]]></parameter>
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x2000000' end='0x4000000' /><slave name='onchip_memory.s1' start='0x4010000' end='0x4019858' /><slave name='cpu.jtag_debug_module' start='0x4020800' end='0x4021000' /><slave name='sgdma.csr' start='0x4021000' end='0x4021040' /><slave name='pio_sd.s1' start='0x4021040' end='0x4021060' /><slave name='sys_clk_timer.s1' start='0x4021060' end='0x4021080' /><slave name='shift_clk.pll_slave' start='0x4021080' end='0x4021090' /><slave name='led_pio.s1' start='0x4021090' end='0x40210A0' /><slave name='sysid.control_slave' start='0x40210A0' end='0x40210A8' /><slave name='jtag_uart.avalon_jtag_slave' start='0x40210A8' end='0x40210B0' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x2000000' end='0x4000000' /><slave name='onchip_memory.s1' start='0x4010000' end='0x4019858' /><slave name='cpu.jtag_debug_module' start='0x4020800' end='0x4021000' /><slave name='sgdma.csr' start='0x4021000' end='0x4021040' /><slave name='timer_0.s1' start='0x4021040' end='0x4021060' /><slave name='pio_sd.s1' start='0x4021060' end='0x4021080' /><slave name='sys_clk_timer.s1' start='0x4021080' end='0x40210A0' /><slave name='spi_master_0.s1' start='0x40210A0' end='0x40210B0' /><slave name='shift_clk.pll_slave' start='0x40210B0' end='0x40210C0' /><slave name='led_pio.s1' start='0x40210C0' end='0x40210D0' /><slave name='sysid.control_slave' start='0x40210D0' end='0x40210D8' /><slave name='jtag_uart.avalon_jtag_slave' start='0x40210D8' end='0x40210E0' /></address-map>]]></parameter>
   <parameter name="clockFrequency" value="100000000" />
   <parameter name="deviceFamilyName" value="Cyclone IV E" />
   <parameter name="internalIrqMaskSystemInfo" value="7" />
@@ -738,6 +780,21 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="4" />
  </module>
+ <module kind="spi_master" version="1.1" enabled="1" name="spi_master_0">
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="100000000" />
+ </module>
+ <module kind="altera_avalon_timer" version="12.1" enabled="1" name="timer_0">
+  <parameter name="alwaysRun" value="false" />
+  <parameter name="counterSize" value="32" />
+  <parameter name="fixedPeriod" value="false" />
+  <parameter name="period" value="1" />
+  <parameter name="periodUnits" value="MSEC" />
+  <parameter name="resetOutput" value="false" />
+  <parameter name="snapshot" value="true" />
+  <parameter name="systemFrequency" value="100000000" />
+  <parameter name="timeoutPulseOutput" value="false" />
+  <parameter name="timerPreset" value="CUSTOM" />
+ </module>
  <connection
    kind="avalon"
    version="12.1"
@@ -787,7 +844,7 @@
    start="cpu.data_master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x040210a8" />
+  <parameter name="baseAddress" value="0x040210d8" />
  </connection>
  <connection
    kind="reset"
@@ -800,7 +857,7 @@
    start="cpu.data_master"
    end="sys_clk_timer.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04021060" />
+  <parameter name="baseAddress" value="0x04021080" />
  </connection>
  <connection kind="reset" version="12.1" start="clk_0.clk_reset" end="sysid.reset" />
  <connection
@@ -809,7 +866,7 @@
    start="cpu.data_master"
    end="sysid.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x040210a0" />
+  <parameter name="baseAddress" value="0x040210d0" />
  </connection>
  <connection
    kind="reset"
@@ -818,7 +875,7 @@
    end="led_pio.reset" />
  <connection kind="avalon" version="12.1" start="cpu.data_master" end="led_pio.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04021090" />
+  <parameter name="baseAddress" value="0x040210c0" />
  </connection>
  <connection kind="interrupt" version="12.1" start="cpu.d_irq" end="jtag_uart.irq">
   <parameter name="irqNumber" value="0" />
@@ -925,7 +982,7 @@
    start="cpu.data_master"
    end="shift_clk.pll_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04021080" />
+  <parameter name="baseAddress" value="0x040210b0" />
  </connection>
  <connection
    kind="clock"
@@ -989,6 +1046,34 @@
    start="clk_0.clk_reset"
    end="pio_sd.reset" />
  <connection kind="avalon" version="12.1" start="cpu.data_master" end="pio_sd.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x04021060" />
+ </connection>
+ <connection
+   kind="reset"
+   version="12.1"
+   start="clk_0.clk_reset"
+   end="spi_master_0.reset" />
+ <connection
+   kind="clock"
+   version="12.1"
+   start="shift_clk.c2"
+   end="spi_master_0.clk" />
+ <connection
+   kind="avalon"
+   version="12.1"
+   start="cpu.data_master"
+   end="spi_master_0.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x040210a0" />
+ </connection>
+ <connection kind="clock" version="12.1" start="shift_clk.c2" end="timer_0.clk" />
+ <connection
+   kind="reset"
+   version="12.1"
+   start="clk_0.clk_reset"
+   end="timer_0.reset" />
+ <connection kind="avalon" version="12.1" start="cpu.data_master" end="timer_0.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04021040" />
  </connection>

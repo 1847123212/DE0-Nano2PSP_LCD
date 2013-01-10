@@ -12,7 +12,7 @@ alt_u32* frameBufferA = (alt_u32*)SDRAM_BASE;
 alt_u32* frameBufferB = (alt_u32*)SDRAM_BASE+0x7F800;
 
 // Active framebuffer
-int active_buffer = 0;		// if 0 A active else B active
+volatile int active_buffer = 0;		// if 0 A active else B active
 
 
 // The InterruptService Routine (actually a callback function called by the ISR)

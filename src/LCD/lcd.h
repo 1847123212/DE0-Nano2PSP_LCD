@@ -24,7 +24,7 @@ extern alt_sgdma_descriptor dmaDescBEND;
 extern alt_u32* frameBufferA;
 extern alt_u32* frameBufferB;
 
-extern int active_buffer;
+extern volatile int active_buffer;
 
 
 void my_dma_callback(void *data);
