@@ -124,11 +124,27 @@
          type = "String";
       }
    }
-   element led_pio.s1
+   element sys_clk_timer.s1
    {
       datum baseAddress
       {
-         value = "67244224";
+         value = "67244160";
+         type = "String";
+      }
+   }
+   element pio_sd.s1
+   {
+      datum baseAddress
+      {
+         value = "67244128";
+         type = "String";
+      }
+   }
+   element onchip_memory.s1
+   {
+      datum baseAddress
+      {
+         value = "67174400";
          type = "String";
       }
    }
@@ -145,11 +161,11 @@
          type = "String";
       }
    }
-   element sys_clk_timer.s1
+   element led_pio.s1
    {
       datum baseAddress
       {
-         value = "67244160";
+         value = "67244224";
          type = "String";
       }
    }
@@ -158,22 +174,6 @@
       datum baseAddress
       {
          value = "67244192";
-         type = "String";
-      }
-   }
-   element onchip_memory.s1
-   {
-      datum baseAddress
-      {
-         value = "67174400";
-         type = "String";
-      }
-   }
-   element pio_sd.s1
-   {
-      datum baseAddress
-      {
-         value = "67244128";
          type = "String";
       }
    }
@@ -269,7 +269,7 @@
  <parameter name="projectName" value="DE0-Nano_LCD.qpf" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1357775026393" />
+ <parameter name="timeStamp" value="1358281059760" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -921,7 +921,7 @@
   <parameter name="baseAddress" value="0x02000000" />
  </connection>
  <connection kind="avalon" version="12.1" start="cpu.data_master" end="sgdma.csr">
-  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="arbitrationPriority" value="128" />
   <parameter name="baseAddress" value="0x04021000" />
  </connection>
  <connection kind="interrupt" version="12.1" start="cpu.d_irq" end="sgdma.csr_irq">
@@ -1019,26 +1019,6 @@
    version="12.1"
    start="cpu.jtag_debug_module_reset"
    end="clk_0.clk_in_reset" />
- <connection
-   kind="reset"
-   version="12.1"
-   start="cpu.jtag_debug_module_reset"
-   end="sgdma.reset" />
- <connection
-   kind="reset"
-   version="12.1"
-   start="cpu.jtag_debug_module_reset"
-   end="dc_fifo.in_clk_reset" />
- <connection
-   kind="reset"
-   version="12.1"
-   start="cpu.jtag_debug_module_reset"
-   end="dc_fifo.out_clk_reset" />
- <connection
-   kind="reset"
-   version="12.1"
-   start="cpu.jtag_debug_module_reset"
-   end="sdram.reset" />
  <connection kind="clock" version="12.1" start="shift_clk.c2" end="pio_sd.clk" />
  <connection
    kind="reset"
