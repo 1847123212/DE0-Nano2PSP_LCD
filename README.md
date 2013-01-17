@@ -3,8 +3,7 @@ DE0-Nano2PSP_LCD
 
 This repo contains all the code necessary for setting up a Nios II softcore
 able to drive a PSP 1000 LCD. The pin mapping in this project are made for 
-a daugther board I have made for the DE0-Nano board. Schematics for the board
-can be found at: ???
+a daugther board I have made for the DE0-Nano board. Schematics for the board will be added later.
 
 
 Build instructions
